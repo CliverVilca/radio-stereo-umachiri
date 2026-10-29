@@ -1,0 +1,531 @@
+/* ═══════════════════════════════════════════════════════════════
+   STEREO UMACHIRI 98.5 FM — RADIO & NEWS BROADCAST THEME
+   Estilo Portal Radial Moderno (Inspirado en la fuerza de RPP Noticias)
+   Tipografía de Alto Impacto · Amarillo Radiante · Rojo En Vivo · Azul Noche
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Paleta Broadcast & Prensa Radial ── */
+    --rpp-dark: #0a1128;           /* Azul medianoche profundo — cabina de emisión */
+    --rpp-navy: #0f1c3f;           /* Azul institucional sólido */
+    --rpp-blue: #1d4ed8;           /* Azul noticias dinámico */
+    --rpp-blue-light: #3b82f6;
+
+    /* ── Identidad de Alto Contraste (RPP & Stereo Umachiri) ── */
+    --rpp-yellow: #facc15;         /* Amarillo oro vibrante — identidad radial, dial, acción */
+    --rpp-yellow-hover: #eab308;
+    --rpp-yellow-glow: rgba(250, 204, 21, 0.35);
+
+    --rpp-red: #ef4444;            /* Rojo Vivo — "ÚLTIMO MINUTO" / "EN VIVO" */
+    --rpp-red-dark: #dc2626;
+    --rpp-red-glow: rgba(239, 68, 68, 0.4);
+
+    --brand-green: #10b981;        /* Verde fresco — Cerro y naturaleza del Logo Umachiri */
+    --brand-green-dark: #059669;
+
+    /* ── Bootstrap Mappings ── */
+    --primary: #0a1128;
+    --primary-rgb: 10, 17, 40;
+    --secondary: #facc15;
+    --accent: #facc15;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+
+    /* ── Fondos y Superficies ── */
+    --bg-body: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-dark: #0a1128;
+    --bg-ticker: #111827;
+
+    /* ── Textos ── */
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --text-white: #ffffff;
+
+    /* ── Tipografía ── */
+    --font-heading: 'Montserrat', system-ui, -apple-system, sans-serif;
+    --font-display: 'Oswald', sans-serif;
+    --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+    /* ── Sombras & Efectos ── */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-md: 0 6px 16px -2px rgba(10, 17, 40, 0.08);
+    --shadow-lg: 0 14px 30px -4px rgba(10, 17, 40, 0.12);
+    --shadow-xl: 0 22px 45px -8px rgba(10, 17, 40, 0.18);
+    --shadow-yellow: 0 8px 25px rgba(250, 204, 21, 0.35);
+    --shadow-red: 0 8px 25px rgba(239, 68, 68, 0.35);
+
+    /* ── Radios ── */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-pill: 9999px;
+}
+
+/* ═══════════════════════════════════════════════════
+   TIPOGRAFÍA DE ALTO IMPACTO (Estilo RPP)
+   ═══════════════════════════════════════════════════ */
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .brand-title, .rpp-headline {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    color: var(--text-main);
+}
+
+.rpp-kicker, .badge-kicker, .dial-tag, .stat-number {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════
+   TOP BROADCAST HEADER (Barra de Transmisión)
+   ═══════════════════════════════════════════════════ */
+.top-broadcast-bar {
+    background: #080d1f;
+    color: white;
+    font-size: 0.8rem;
+    border-bottom: 2px solid var(--rpp-yellow);
+    position: relative;
+    z-index: 1060;
+}
+
+.top-broadcast-bar a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.top-broadcast-bar a:hover {
+    color: var(--rpp-yellow);
+}
+
+/* ═══════════════════════════════════════════════════
+   BREAKING NEWS TICKER ("ÚLTIMO MINUTO")
+   ═══════════════════════════════════════════════════ */
+.breaking-ticker-wrap {
+    background: #0f172a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    z-index: 1050;
+}
+
+.breaking-label {
+    background: var(--rpp-red);
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    padding: 0.45rem 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    position: relative;
+    clip-path: polygon(0 0, 94% 0, 100% 100%, 0% 100%);
+    padding-right: 1.5rem;
+}
+
+.pulse-circle {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: blink-dot 1.2s infinite ease-in-out;
+}
+
+@keyframes blink-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+.ticker-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.4rem 1rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVBAR MODERNA — Sticky Broadcast Bar
+   ═══════════════════════════════════════════════════ */
+.modern-navbar {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 20px rgba(10, 17, 40, 0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    position: sticky;
+    top: 0;
+    z-index: 1040;
+    transition: all 0.3s ease;
+}
+
+.modern-nav-link {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text-main);
+    padding: 0.6rem 0.95rem;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.modern-nav-link:hover {
+    color: var(--rpp-dark);
+    background: rgba(250, 204, 21, 0.18);
+    transform: translateY(-1px);
+}
+
+.modern-nav-link.active {
+    color: var(--rpp-dark);
+    background: var(--rpp-yellow);
+    box-shadow: 0 2px 10px rgba(250, 204, 21, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════
+   ANIMACIÓN DEL ECUALIZADOR (Equalizer Sound Waves)
+   ═══════════════════════════════════════════════════ */
+.sound-equalizer {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 18px;
+    vertical-align: middle;
+}
+
+.sound-equalizer .eq-bar {
+    width: 3.5px;
+    background: var(--rpp-yellow);
+    border-radius: 99px;
+    animation: eq-bounce 1.2s infinite ease-in-out alternate;
+}
+
+.sound-equalizer .eq-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+.sound-equalizer .eq-bar:nth-child(2) { height: 80%; animation-delay: 0.3s; }
+.sound-equalizer .eq-bar:nth-child(3) { height: 100%; animation-delay: 0.15s; }
+.sound-equalizer .eq-bar:nth-child(4) { height: 60%; animation-delay: 0.45s; }
+.sound-equalizer .eq-bar:nth-child(5) { height: 90%; animation-delay: 0.25s; }
+
+@keyframes eq-bounce {
+    0% { height: 25%; }
+    50% { height: 100%; }
+    100% { height: 40%; }
+}
+
+/* ═══════════════════════════════════════════════════
+   HERO BROADCAST — Estilo Gran Cadena Radial
+   ═══════════════════════════════════════════════════ */
+.broadcast-hero {
+    background: linear-gradient(135deg, #070c1d 0%, #0d1738 50%, #09122c 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 3.5rem 0 4.5rem;
+    color: white;
+}
+
+.broadcast-hero::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(250, 204, 21, 0.15) 0%, rgba(29, 78, 216, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+}
+
+.broadcast-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Badge En Vivo Vibrante */
+.live-pill {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius-pill);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.live-pill .dot-live {
+    width: 9px;
+    height: 9px;
+    background: var(--rpp-red);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--rpp-red);
+    animation: blink-dot 1s infinite ease-in-out;
+}
+
+/* Botón Reproductor Amarillo RPP */
+.btn-rpp-play {
+    background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+    color: #080d1f !important;
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    padding: 0.9rem 2.2rem;
+    border-radius: var(--radius-pill);
+    border: none;
+    box-shadow: 0 10px 30px rgba(250, 204, 21, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.btn-rpp-play:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(250, 204, 21, 0.55);
+    background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
+}
+
+.btn-rpp-play:active {
+    transform: translateY(-1px);
+}
+
+/* Tarjeta Al Aire Ahora (On Air Card) */
+.on-air-card {
+    background: rgba(15, 28, 63, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(250, 204, 21, 0.25);
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+}
+
+.on-air-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--rpp-red), var(--rpp-yellow), var(--brand-green));
+}
+
+/* ═══════════════════════════════════════════════════
+   DIAL 98.5 FM DISPLAY
+   ═══════════════════════════════════════════════════ */
+.dial-display {
+    font-family: var(--font-display);
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--rpp-yellow);
+    text-shadow: 0 0 25px rgba(250, 204, 21, 0.4);
+    display: inline-block;
+}
+
+.dial-unit {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: white;
+    margin-left: 0.2rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   TARJETAS DE NOTICIAS & CONTENIDO (Estilo Portal RPP)
+   ═══════════════════════════════════════════════════ */
+.rpp-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0,0,0,0.06);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.rpp-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-xl);
+    border-color: rgba(250, 204, 21, 0.5);
+}
+
+.rpp-card .card-img-wrap {
+    overflow: hidden;
+    position: relative;
+    background: #0a1128;
+}
+
+.rpp-card .card-img-wrap img {
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rpp-card:hover .card-img-wrap img {
+    transform: scale(1.06);
+}
+
+/* Titulares de Noticia con Fuerza */
+.rpp-title {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.15rem;
+    line-height: 1.35;
+    color: var(--text-main);
+    transition: color 0.2s ease;
+}
+
+.rpp-card:hover .rpp-title {
+    color: var(--rpp-blue);
+}
+
+/* Badges de Categoría */
+.badge-broadcast {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+}
+
+.badge-broadcast.badge-live {
+    background: var(--rpp-red);
+    color: white;
+}
+
+.badge-broadcast.badge-breaking {
+    background: var(--rpp-yellow);
+    color: #080d1f;
+}
+
+.badge-broadcast.badge-audio {
+    background: var(--rpp-blue);
+    color: white;
+}
+
+.badge-broadcast.badge-green {
+    background: var(--brand-green);
+    color: white;
+}
+
+/* ═══════════════════════════════════════════════════
+   FIXED BOTTOM PLAYER (Barra de Audio Permanente)
+   ═══════════════════════════════════════════════════ */
+.fixed-bottom-radio-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    background: #080d1f;
+    border-top: 3px solid var(--rpp-yellow);
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+    padding: 0.65rem 0;
+    backdrop-filter: blur(16px);
+}
+
+.fixed-bottom-radio-player .radio-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+.fixed-bottom-radio-player .btn-premium-play {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--rpp-yellow);
+    color: #080d1f;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: 0 0 16px rgba(250, 204, 21, 0.45);
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.fixed-bottom-radio-player .btn-premium-play:hover {
+    transform: scale(1.1);
+    background: #fde047;
+}
+
+.fixed-bottom-radio-player .song-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: white;
+    font-size: 0.95rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   DARK MODE
+   ═══════════════════════════════════════════════════ */
+body.dark-mode {
+    --bg-body: #070c1d;
+    --bg-card: #0f172a;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+}
+
+body.dark-mode .modern-navbar {
+    background: rgba(8, 13, 31, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .modern-nav-link {
+    color: #f8fafc;
+}
+
+body.dark-mode .rpp-card {
+    background: #0f1c3f;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .rpp-title {
+    color: #f8fafc;
+}
+
+body.dark-mode .rpp-card:hover .rpp-title {
+    color: var(--rpp-yellow);
+}

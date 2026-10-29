@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema de Noticias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover { background: #0056b3; }
+        .news-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .news-title { font-weight: bold; color: #333; }
+        .news-meta { color: #666; font-size: 0.9em; }
+        .news-content { margin: 10px 0; }
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: white;
+        }
+        .status-published { background: #28a745; }
+        .status-draft { background: #6c757d; }
+        .type-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: white;
+            margin-left: 5px;
+        }
+        .type-local { background: #007bff; }
+        .type-internacional { background: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Sistema de Noticias - Backend y Frontend</h1>
+        
+        <div class="test-section">
+            <h3>1. Test Conexión API</h3>
+            <button onclick="testApiConnection()">Probar Conexión</button>
+            <div id="api-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Test Listar Noticias</h3>
+            <button onclick="testListNews()">Listar Noticias</button>
+            <div id="list-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Test Crear Noticia</h3>
+            <button onclick="testCreateNews()">Crear Noticia</button>
+            <div id="create-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Test Actualizar Noticia</h3>
+            <button onclick="testUpdateNews()">Actualizar Última Noticia</button>
+            <div id="update-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Test Subir Imagen</h3>
+            <input type="file" id="imageFile" accept="image/*">
+            <button onclick="testImageUpload()">Subir Imagen</button>
+            <div id="image-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>6. Noticias Actuales</h3>
+            <button onclick="displayNews()">Mostrar Noticias</button>
+            <div id="news-display" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/dev-admin';
+        let lastNewsId = null;
+
+        async function testApiConnection() {
+            const result = document.getElementById('api-result');
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/stats`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.className = 'result success';
+                    result.textContent = `✅ Conexión exitosa!\nEstadísticas: ${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ Error en respuesta: ${JSON.stringify(data)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Error de conexión: ${error.message}`;
+            }
+        }
+
+        async function testListNews() {
+            const result = document.getElementById('list-result');
+            try {
+                const response = await fetch(`${API_BASE}/news`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.className = 'result success';
+                    result.textContent = `✅ Noticias obtenidas correctamente!\nTotal: ${data.data.pagination.total} noticias\nPrimeras noticias: ${JSON.stringify(data.data.items.slice(0, 2), null, 2)}`;
+                    
+                    if (data.data.items.length > 0) {
+                        lastNewsId = data.data.items[0].id;
+                    }
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ Error: ${JSON.stringify(data)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testCreateNews() {
+            const result = document.getElementById('create-result');
+            try {
+                const newsData = {
+                    title: `Noticia de Prueba ${new Date().toLocaleString()}`,
+                    content: 'Esta es una noticia creada desde el test del frontend para verificar la conectividad completa del sistema.',
+                    author: 'Sistema de Pruebas',
+                    type: 'local',
+                    status: 'published',
+                    published_at: new Date().toISOString().slice(0, 16)
+                };
+
+                const response = await fetch(`${API_BASE}/news`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(newsData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.className = 'result success';
+                    result.textContent = `✅ Noticia creada correctamente!\nID: ${data.data.id}\nTítulo: ${data.data.title}`;
+                    lastNewsId = data.data.id;
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ Error: ${JSON.stringify(data)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testUpdateNews() {
+            const result = document.getElementById('update-result');
+            
+            if (!lastNewsId) {
+                result.className = 'result error';
+                result.textContent = '❌ No hay noticia para actualizar. Crea una primero.';
+                return;
+            }
+
+            try {
+                const updateData = {
+                    title: `Noticia Actualizada ${new Date().toLocaleString()}`,
+                    content: 'Esta noticia ha sido actualizada desde el test del frontend.',
+                    author: 'Sistema de Pruebas - Actualizado',
+                    type: 'internacional',
+                    status: 'published',
+                    published_at: new Date().toISOString().slice(0, 16)
+                };
+
+                const response = await fetch(`${API_BASE}/news/${lastNewsId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.className = 'result success';
+                    result.textContent = `✅ Noticia actualizada correctamente!\nID: ${data.data.id}\nNuevo título: ${data.data.title}`;
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ Error: ${JSON.stringify(data)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function testImageUpload() {
+            const result = document.getElementById('image-result');
+            const fileInput = document.getElementById('imageFile');
+            
+            if (!fileInput.files[0]) {
+                result.className = 'result error';
+                result.textContent = '❌ Por favor selecciona una imagen primero.';
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('title', `Noticia con Imagen ${new Date().toLocaleString()}`);
+                formData.append('content', 'Esta noticia incluye una imagen de prueba.');
+                formData.append('author', 'Sistema de Pruebas');
+                formData.append('type', 'local');
+                formData.append('status', 'published');
+                formData.append('published_at', new Date().toISOString().slice(0, 16));
+                formData.append('image', fileInput.files[0]);
+
+                const response = await fetch(`${API_BASE}/news`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.className = 'result success';
+                    result.innerHTML = `✅ Noticia con imagen creada correctamente!<br>
+                        ID: ${data.data.id}<br>
+                        Título: ${data.data.title}<br>
+                        Imagen: ${data.data.image}<br>
+                        <img src="/storage/${data.data.image}" style="max-width: 200px; margin-top: 10px;">`;
+                } else {
+                    result.className = 'result error';
+                    result.textContent = `❌ Error: ${JSON.stringify(data)}`;
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        async function displayNews() {
+            const result = document.getElementById('news-display');
+            try {
+                const response = await fetch(`${API_BASE}/news`);
+                const data = await response.json();
+                
+                if (data.success && data.data.items.length > 0) {
+                    result.className = 'result success';
+                    let html = `<h4>Total: ${data.data.pagination.total} noticias</h4>`;
+                    
+                    data.data.items.forEach(news => {
+                        html += `
+                            <div class="news-item">
+                                <div class="news-title">${news.title}</div>
+                                <div class="news-meta">
+                                    Por: ${news.author} | 
+                                    ${new Date(news.published_at).toLocaleDateString('es-ES')}
+                                    <span class="status-badge status-${news.status}">${news.status}</span>
+                                    <span class="type-badge type-${news.type}">${news.type}</span>
+                                </div>
+                                <div class="news-content">${news.content.substring(0, 150)}...</div>
+                                ${news.image ? `<img src="/storage/${news.image}" style="max-width: 100px; margin-top: 5px;">` : ''}
+                            </div>
+                        `;
+                    });
+                    
+                    result.innerHTML = html;
+                } else {
+                    result.className = 'result error';
+                    result.textContent = '❌ No se encontraron noticias';
+                }
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Auto-test on load
+        window.onload = function() {
+            testApiConnection();
+        };
+    </script>
+</body>
+</html>

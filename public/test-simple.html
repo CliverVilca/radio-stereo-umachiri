@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Rápido - Sistema de Noticias</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Rápido del Sistema de Noticias</h1>
+    
+    <div class="test">
+        <h3>1. Test de Conexión API</h3>
+        <button onclick="testConnection()">Probar Conexión</button>
+        <div id="connection-result" class="result"></div>
+    </div>
+
+    <div class="test">
+        <h3>2. Test de Noticias</h3>
+        <button onclick="testNews()">Listar Noticias</button>
+        <div id="news-result" class="result"></div>
+    </div>
+
+    <div class="test">
+        <h3>3. Crear Noticia de Prueba</h3>
+        <button onclick="createTestNews()">Crear Noticia</button>
+        <div id="create-result" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/dev-admin';
+
+        async function testConnection() {
+            const result = document.getElementById('connection-result');
+            result.innerHTML = '🔄 Probando conexión...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/stats`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.innerHTML = `✅ ¡Conexión exitosa!<br>Noticias en BD: ${data.data.news_count}`;
+                    result.parentElement.className = 'test success';
+                } else {
+                    result.innerHTML = `❌ Error en respuesta: ${JSON.stringify(data)}`;
+                    result.parentElement.className = 'test error';
+                }
+            } catch (error) {
+                result.innerHTML = `❌ Error de conexión: ${error.message}`;
+                result.parentElement.className = 'test error';
+            }
+        }
+
+        async function testNews() {
+            const result = document.getElementById('news-result');
+            result.innerHTML = '🔄 Obteniendo noticias...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/news`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    let html = `✅ ${data.data.pagination.total} noticias encontradas<br><br>`;
+                    data.data.items.slice(0, 3).forEach(news => {
+                        html += `📰 <strong>${news.title}</strong><br>`;
+                        html += `   Autor: ${news.author} | Estado: ${news.status} | Tipo: ${news.type}<br><br>`;
+                    });
+                    result.innerHTML = html;
+                    result.parentElement.className = 'test success';
+                } else {
+                    result.innerHTML = `❌ Error: ${JSON.stringify(data)}`;
+                    result.parentElement.className = 'test error';
+                }
+            } catch (error) {
+                result.innerHTML = `❌ Error: ${error.message}`;
+                result.parentElement.className = 'test error';
+            }
+        }
+
+        async function createTestNews() {
+            const result = document.getElementById('create-result');
+            result.innerHTML = '🔄 Creando noticia de prueba...';
+            
+            try {
+                const newsData = {
+                    title: `Noticia de Prueba ${new Date().toLocaleString()}`,
+                    content: 'Esta es una noticia creada desde el test para verificar que el sistema funciona correctamente.',
+                    author: 'Sistema de Pruebas',
+                    type: 'local',
+                    status: 'published',
+                    published_at: new Date().toISOString().slice(0, 16)
+                };
+
+                const response = await fetch(`${API_BASE}/news`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(newsData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.innerHTML = `✅ ¡Noticia creada exitosamente!<br>ID: ${data.data.id}<br>Título: ${data.data.title}`;
+                    result.parentElement.className = 'test success';
+                } else {
+                    result.innerHTML = `❌ Error: ${JSON.stringify(data)}`;
+                    result.parentElement.className = 'test error';
+                }
+            } catch (error) {
+                result.innerHTML = `❌ Error: ${error.message}`;
+                result.parentElement.className = 'test error';
+            }
+        }
+
+        // Auto-test al cargar
+        window.onload = function() {
+            testConnection();
+        };
+    </script>
+</body>
+</html>

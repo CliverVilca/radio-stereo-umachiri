@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sistema Noticias - Funcionando</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            background: #fafafa;
+        }
+        .success { 
+            background: #d4edda; 
+            border-color: #c3e6cb; 
+            color: #155724;
+        }
+        .error { 
+            background: #f8d7da; 
+            border-color: #f5c6cb; 
+            color: #721c24;
+        }
+        .loading {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .result { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: #f8f9fa; 
+            border-radius: 6px; 
+            border-left: 4px solid #007bff;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+        .news-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .news-title { font-weight: bold; color: #333; margin-bottom: 8px; }
+        .news-meta { color: #6c757d; font-size: 12px; margin-bottom: 10px; }
+        .news-content { color: #495057; line-height: 1.4; }
+        h1 { color: #333; text-align: center; }
+        h3 { color: #495057; margin-top: 0; }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background: #28a745; }
+        .status-error { background: #dc3545; }
+        .status-loading { background: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Sistema de Noticias - Test Completo</h1>
+        
+        <div class="test" id="test-connection">
+            <h3><span class="status-indicator status-loading"></span>1. Conexión API</h3>
+            <button onclick="testConnection()" id="btn-connection">Probar Conexión</button>
+            <div id="connection-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test" id="test-news">
+            <h3><span class="status-indicator status-loading"></span>2. Listar Noticias</h3>
+            <button onclick="testNews()" id="btn-news">Obtener Noticias</button>
+            <div id="news-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test" id="test-create">
+            <h3><span class="status-indicator status-loading"></span>3. Crear Noticia</h3>
+            <button onclick="createNews()" id="btn-create">Crear Noticia de Prueba</button>
+            <div id="create-result" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test" id="test-display">
+            <h3><span class="status-indicator status-loading"></span>4. Mostrar Noticias</h3>
+            <button onclick="displayNews()" id="btn-display">Mostrar Todas las Noticias</button>
+            <div id="display-result" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/dev-admin';
+        let testResults = {
+            connection: false,
+            news: false,
+            create: false,
+            display: false
+        };
+
+        function updateTestStatus(testName, success) {
+            testResults[testName] = success;
+            const testElement = document.getElementById(`test-${testName}`);
+            const indicator = testElement.querySelector('.status-indicator');
+            
+            if (success) {
+                testElement.className = 'test success';
+                indicator.className = 'status-indicator status-success';
+            } else {
+                testElement.className = 'test error';
+                indicator.className = 'status-indicator status-error';
+            }
+        }
+
+        function showResult(elementId, content, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = content;
+            if (isError) {
+                element.style.borderLeftColor = '#dc3545';
+                element.style.background = '#f8d7da';
+            } else {
+                element.style.borderLeftColor = '#28a745';
+                element.style.background = '#d4edda';
+            }
+        }
+
+        async function testConnection() {
+            const btn = document.getElementById('btn-connection');
+            btn.disabled = true;
+            btn.textContent = 'Probando...';
+            
+            try {
+                console.log('Probando conexión a:', `${API_BASE}/dashboard/stats`);
+                
+                const response = await fetch(`${API_BASE}/dashboard/stats`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    const result = `✅ Conexión exitosa!
+Estado: ${response.status} ${response.statusText}
+Noticias: ${data.data.news_count}
+Deportes: ${data.data.sports_count}
+Eventos: ${data.data.events_count}
+Programas: ${data.data.programs_count}`;
+                    
+                    showResult('connection-result', result);
+                    updateTestStatus('connection', true);
+                } else {
+                    throw new Error('Respuesta no exitosa: ' + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                console.error('Error en conexión:', error);
+                const errorMsg = `❌ Error de conexión:
+${error.message}
+
+URL probada: ${API_BASE}/dashboard/stats
+Verifica que el servidor Laravel esté corriendo en puerto 8000`;
+                
+                showResult('connection-result', errorMsg, true);
+                updateTestStatus('connection', false);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Probar Conexión';
+            }
+        }
+
+        async function testNews() {
+            const btn = document.getElementById('btn-news');
+            btn.disabled = true;
+            btn.textContent = 'Obteniendo...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/news`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const result = `✅ Noticias obtenidas correctamente!
+Total: ${data.data.pagination.total} noticias
+Página actual: ${data.data.pagination.current_page}
+Por página: ${data.data.pagination.per_page}
+
+Primeras noticias:
+${data.data.items.slice(0, 3).map(news => 
+    `• ${news.title} (${news.status}) - ${news.author}`
+).join('\n')}`;
+                    
+                    showResult('news-result', result);
+                    updateTestStatus('news', true);
+                } else {
+                    throw new Error('Respuesta no exitosa: ' + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                console.error('Error obteniendo noticias:', error);
+                showResult('news-result', `❌ Error: ${error.message}`, true);
+                updateTestStatus('news', false);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Obtener Noticias';
+            }
+        }
+
+        async function createNews() {
+            const btn = document.getElementById('btn-create');
+            btn.disabled = true;
+            btn.textContent = 'Creando...';
+            
+            try {
+                const newsData = {
+                    title: `Noticia de Prueba ${new Date().toLocaleString()}`,
+                    content: 'Esta es una noticia creada automáticamente por el sistema de pruebas para verificar que el CRUD funciona correctamente.',
+                    author: 'Sistema de Pruebas Automatizado',
+                    type: 'local',
+                    status: 'published',
+                    published_at: new Date().toISOString().slice(0, 16)
+                };
+
+                const response = await fetch(`${API_BASE}/news`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newsData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const result = `✅ Noticia creada exitosamente!
+ID: ${data.data.id}
+Título: ${data.data.title}
+Autor: ${data.data.author}
+Estado: ${data.data.status}
+Tipo: ${data.data.type}
+Fecha: ${new Date(data.data.published_at).toLocaleString()}`;
+                    
+                    showResult('create-result', result);
+                    updateTestStatus('create', true);
+                } else {
+                    throw new Error('Error en creación: ' + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                console.error('Error creando noticia:', error);
+                showResult('create-result', `❌ Error: ${error.message}`, true);
+                updateTestStatus('create', false);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Crear Noticia de Prueba';
+            }
+        }
+
+        async function displayNews() {
+            const btn = document.getElementById('btn-display');
+            btn.disabled = true;
+            btn.textContent = 'Cargando...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/news`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.data.items.length > 0) {
+                    const resultElement = document.getElementById('display-result');
+                    resultElement.style.display = 'block';
+                    resultElement.style.borderLeftColor = '#28a745';
+                    resultElement.style.background = '#d4edda';
+                    
+                    let html = `<strong>📰 ${data.data.pagination.total} noticias encontradas</strong><br><br>`;
+                    
+                    data.data.items.forEach(news => {
+                        html += `<div class="news-item">
+                            <div class="news-title">${news.title}</div>
+                            <div class="news-meta">
+                                Por: ${news.author} | 
+                                ${new Date(news.published_at).toLocaleDateString('es-ES')} | 
+                                Estado: ${news.status} | 
+                                Tipo: ${news.type}
+                            </div>
+                            <div class="news-content">${news.content.substring(0, 200)}${news.content.length > 200 ? '...' : ''}</div>
+                        </div>`;
+                    });
+                    
+                    resultElement.innerHTML = html;
+                    updateTestStatus('display', true);
+                } else {
+                    showResult('display-result', '❌ No se encontraron noticias', true);
+                    updateTestStatus('display', false);
+                }
+                
+            } catch (error) {
+                console.error('Error mostrando noticias:', error);
+                showResult('display-result', `❌ Error: ${error.message}`, true);
+                updateTestStatus('display', false);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Mostrar Todas las Noticias';
+            }
+        }
+
+        // Auto-ejecutar test de conexión al cargar
+        window.onload = function() {
+            console.log('Página cargada, iniciando test automático...');
+            setTimeout(testConnection, 500);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Actualización de Noticias</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; }
+        textarea { height: 100px; }
+        button { background: #007bff; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin-top: 1rem; padding: 1rem; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .current-image { margin: 1rem 0; }
+        .current-image img { max-width: 200px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test de Actualización de Noticias</h1>
+        
+        <!-- Cargar Noticia -->
+        <div>
+            <h2>1. Cargar Noticia Existente</h2>
+            <div class="form-group">
+                <label>ID de la Noticia:</label>
+                <input type="number" id="newsId" placeholder="Ej: 3, 5, 6, 8, 9">
+                <button onclick="loadNews()" style="margin-top: 0.5rem;">Cargar Noticia</button>
+            </div>
+            <div id="loadResult"></div>
+        </div>
+
+        <!-- Formulario de Actualización -->
+        <div id="updateSection" style="display: none;">
+            <h2>2. Actualizar Noticia</h2>
+            <form id="updateForm">
+                <div class="form-group">
+                    <label>Título:</label>
+                    <input type="text" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Contenido:</label>
+                    <textarea name="content" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Autor:</label>
+                    <input type="text" name="author" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo:</label>
+                    <select name="type" required>
+                        <option value="local">Local</option>
+                        <option value="nacional">Nacional</option>
+                        <option value="internacional">Internacional</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Fecha de Publicación:</label>
+                    <input type="date" name="published_at" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <select name="status" required>
+                        <option value="published">Publicado</option>
+                        <option value="draft">Borrador</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="is_featured"> Noticia destacada
+                    </label>
+                </div>
+                
+                <div id="currentImageSection" class="current-image"></div>
+                
+                <div class="form-group">
+                    <label>Nueva Imagen (opcional):</label>
+                    <input type="file" name="image" accept="image/*" onchange="previewImage(this)">
+                    <div id="imagePreview"></div>
+                </div>
+                
+                <button type="submit">Actualizar Noticia</button>
+            </form>
+            <div id="updateResult"></div>
+        </div>
+
+        <!-- Enlaces -->
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="/admin-functional-test" target="_blank" style="margin: 0 1rem;">Panel Admin</a>
+            <a href="/test-news-images" target="_blank" style="margin: 0 1rem;">Test Completo</a>
+            <a href="/noticias" target="_blank" style="margin: 0 1rem;">Ver Noticias</a>
+        </div>
+    </div>
+
+    <script>
+        let currentNewsId = null;
+
+        async function loadNews() {
+            const id = document.getElementById('newsId').value;
+            if (!id) {
+                alert('Por favor ingresa un ID');
+                return;
+            }
+
+            const resultDiv = document.getElementById('loadResult');
+            resultDiv.innerHTML = '🔄 Cargando...';
+
+            try {
+                const response = await fetch(`/test-admin-api/news/${id}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const news = result.data;
+                    currentNewsId = id;
+
+                    // Llenar formulario
+                    const form = document.getElementById('updateForm');
+                    form.title.value = news.title;
+                    form.content.value = news.content;
+                    form.author.value = news.author;
+                    form.type.value = news.type;
+                    form.published_at.value = news.published_at.split('T')[0];
+                    form.status.value = news.status;
+                    form.is_featured.checked = news.is_featured;
+
+                    // Mostrar imagen actual
+                    const currentImageDiv = document.getElementById('currentImageSection');
+                    if (news.image) {
+                        currentImageDiv.innerHTML = `
+                            <label>Imagen Actual:</label>
+                            <div><img src="/storage/${news.image}" alt="Imagen actual"></div>
+                            <p>Archivo: ${news.image}</p>
+                        `;
+                    } else {
+                        currentImageDiv.innerHTML = '<p>Sin imagen actual</p>';
+                    }
+
+                    document.getElementById('updateSection').style.display = 'block';
+                    resultDiv.innerHTML = `<div class="success">✅ Noticia cargada: ${news.title}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${result.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" style="max-width: 200px; margin-top: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        document.getElementById('updateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!currentNewsId) return;
+
+            const resultDiv = document.getElementById('updateResult');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Actualizando...';
+            resultDiv.innerHTML = '🔄 Actualizando noticia...';
+
+            try {
+                const formData = new FormData(this);
+                
+                console.log('Enviando datos:', Object.fromEntries(formData.entries()));
+
+                const response = await fetch(`/test-admin-api/news/${currentNewsId}/update`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                console.log('Respuesta:', result);
+
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            ✅ ${result.message}
+                            <br><strong>Imagen:</strong> ${result.data.image || 'Sin imagen'}
+                        </div>
+                    `;
+                    
+                    // Recargar la noticia para ver los cambios
+                    setTimeout(() => {
+                        loadNews();
+                    }, 1000);
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${result.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Actualizar Noticia';
+        });
+    </script>
+</body>
+</html>

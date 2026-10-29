@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Actualización Automática</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #3b82f6;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background: linear-gradient(145deg, #1e293b, #334155);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #3b82f6;
+        }
+        
+        .card p {
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success { background: #10b981; }
+        .notification.error { background: #ef4444; }
+        .notification.info { background: #3b82f6; }
+        
+        .counter {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+        
+        .counter span {
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Test Actualización Automática</h1>
+            <p>Demostración de CRUD con actualización instantánea</p>
+        </div>
+        
+        <div class="counter">
+            Total de elementos: <span id="counter">0</span>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-success" onclick="createItem()">
+                <i class="fas fa-plus"></i> Crear Elemento
+            </button>
+            <button class="btn btn-primary" onclick="updateRandomItem()">
+                <i class="fas fa-edit"></i> Actualizar Aleatorio
+            </button>
+            <button class="btn btn-danger" onclick="deleteRandomItem()">
+                <i class="fas fa-trash"></i> Eliminar Aleatorio
+            </button>
+            <button class="btn btn-warning" onclick="clearAll()">
+                <i class="fas fa-broom"></i> Limpiar Todo
+            </button>
+        </div>
+        
+        <div id="contentGrid" class="content-grid">
+            <!-- Los elementos aparecerán aquí -->
+        </div>
+    </div>
+    
+    <script>
+        let items = [];
+        let nextId = 1;
+        
+        // Crear elemento
+        function createItem() {
+            const item = {
+                id: nextId++,
+                title: `Elemento ${nextId - 1}`,
+                content: `Contenido del elemento creado a las ${new Date().toLocaleTimeString()}`,
+                created: new Date().toLocaleString()
+            };
+            
+            items.push(item);
+            showNotification('Elemento creado correctamente', 'success');
+            updateUI();
+        }
+        
+        // Actualizar elemento aleatorio
+        function updateRandomItem() {
+            if (items.length === 0) {
+                showNotification('No hay elementos para actualizar', 'error');
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * items.length);
+            items[randomIndex].title = `Elemento ${items[randomIndex].id} (Actualizado)`;
+            items[randomIndex].content = `Contenido actualizado a las ${new Date().toLocaleTimeString()}`;
+            items[randomIndex].updated = new Date().toLocaleString();
+            
+            showNotification('Elemento actualizado correctamente', 'success');
+            updateUI();
+        }
+        
+        // Eliminar elemento específico
+        function deleteItem(id) {
+            if (!confirm('¿Estás seguro de que quieres eliminar este elemento?')) return;
+            
+            items = items.filter(item => item.id !== id);
+            showNotification('Elemento eliminado correctamente', 'success');
+            updateUI();
+        }
+        
+        // Eliminar elemento aleatorio
+        function deleteRandomItem() {
+            if (items.length === 0) {
+                showNotification('No hay elementos para eliminar', 'error');
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * items.length);
+            const deletedItem = items.splice(randomIndex, 1)[0];
+            showNotification(`Elemento "${deletedItem.title}" eliminado`, 'success');
+            updateUI();
+        }
+        
+        // Limpiar todo
+        function clearAll() {
+            if (!confirm('¿Estás seguro de que quieres eliminar todos los elementos?')) return;
+            
+            items = [];
+            showNotification('Todos los elementos eliminados', 'info');
+            updateUI();
+        }
+        
+        // Actualizar UI automáticamente
+        function updateUI() {
+            const grid = document.getElementById('contentGrid');
+            const counter = document.getElementById('counter');
+            
+            // Actualizar contador
+            counter.textContent = items.length;
+            
+            // Actualizar grid
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b;">
+                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3>No hay elementos</h3>
+                        <p>Crea tu primer elemento para comenzar</p>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = items.map(item => `
+                    <div class="card" data-id="${item.id}">
+                        <h3>${item.title}</h3>
+                        <p>${item.content}</p>
+                        <p style="font-size: 0.8rem; color: #94a3b8;">
+                            Creado: ${item.created}
+                            ${item.updated ? `<br>Actualizado: ${item.updated}` : ''}
+                        </p>
+                        <div class="card-actions">
+                            <button class="btn btn-warning btn-small" onclick="editItem(${item.id})">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deleteItem(${item.id})">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            console.log('UI actualizada automáticamente. Total elementos:', items.length);
+        }
+        
+        // Editar elemento
+        function editItem(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+            
+            const newTitle = prompt('Nuevo título:', item.title);
+            if (newTitle && newTitle !== item.title) {
+                item.title = newTitle;
+                item.content = `Contenido editado a las ${new Date().toLocaleTimeString()}`;
+                item.updated = new Date().toLocaleString();
+                
+                showNotification('Elemento editado correctamente', 'success');
+                updateUI();
+            }
+        }
+        
+        // Sistema de notificaciones
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+        
+        // Inicializar con algunos elementos de ejemplo
+        function init() {
+            createItem();
+            createItem();
+            createItem();
+            showNotification('Demo inicializada con 3 elementos', 'info');
+        }
+        
+        // Inicializar cuando cargue la página
+        window.addEventListener('load', init);
+        
+        console.log('✅ Test de actualización automática cargado correctamente');
+    </script>
+</body>
+</html>

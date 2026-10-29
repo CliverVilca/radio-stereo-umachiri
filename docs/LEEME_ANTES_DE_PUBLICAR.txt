@@ -1,0 +1,32 @@
+INSTRUCCIONES PARA PUBLICACIÓN - STEREO UMACHIRI
+
+¡El sitio web está listo! Aquí tienes los pasos finales para ponerlo en producción con los datos reales:
+
+1. CONFIGURAR EL STREAMING DE AUDIO (RADIO EN VIVO)
+   - Abre el archivo: resources/views/livewire/radio-player.blade.php
+   - Busca la línea que dice: <source src="http://streaming.tdiradio.com:8000/stream" ...>
+   - Reemplaza esa URL (http://streaming...) por la URL real que te provee tu servidor de streaming (Icecast/Shoutcast).
+
+2. REDES SOCIALES
+   - Abre el archivo: resources/views/layouts/app.blade.php
+   - Busca la sección de "social-links" (hacia el final del archivo, en el footer).
+   - Reemplaza los "#" en los href por los enlaces reales de Facebook, Instagram, etc.
+     Ejemplo: <a href="https://facebook.com/stereoumachirioficial" ...>
+
+3. CREDENCIALES DE ADMINISTRADOR
+   - Actualmente el usuario administrador es:
+     Email: admin@admin.com
+     Password: password
+   - Una vez en producción, entra al panel, ve a "Perfil" (si existe) o usa Tinker para cambiar la contraseña por seguridad.
+
+4. LOGOS
+   - Si deseas cambiar el logo principal, reemplaza el archivo: public/assets/images/logo.png
+   - Asegúrate de mantener el nombre 'logo.png' o actualizar las referencias en el código.
+
+5. MODO PRODUCCIÓN
+   - En tu servidor final, asegúrate de que el archivo .env tenga:
+     APP_ENV=production
+     APP_DEBUG=false
+   - Esto ocultará los mensajes de error detallados al público y mostrará la página 404 personalizada que creamos.
+
+¡Éxito con el lanzamiento!

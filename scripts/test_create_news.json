@@ -1,0 +1,8 @@
+{
+  "title": "Noticia de Prueba API",
+  "content": "Esta es una noticia creada desde la API para probar que funciona correctamente.",
+  "author": "Admin Test",
+  "published_at": "2025-10-15 15:00:00",
+  "type": "local",
+  "status": "published"
+}

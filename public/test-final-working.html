@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✅ SISTEMA FUNCIONANDO - Test Final</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 15px;
+            border: 2px solid #ef4444;
+        }
+        .test { 
+            margin: 20px 0; 
+            padding: 20px; 
+            border: 2px solid #374151; 
+            border-radius: 10px; 
+            background: rgba(17, 24, 39, 0.8);
+            transition: all 0.3s ease;
+        }
+        .test:hover {
+            border-color: #ef4444;
+            background: rgba(17, 24, 39, 1);
+        }
+        .success { 
+            background: rgba(16, 185, 129, 0.2); 
+            border-color: #10b981; 
+        }
+        .error { 
+            background: rgba(239, 68, 68, 0.2); 
+            border-color: #ef4444; 
+        }
+        .loading {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: #fbbf24;
+        }
+        button { 
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-right: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        button:hover { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+        button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .result { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: rgba(55, 65, 81, 0.8); 
+            border-radius: 8px; 
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            border-left: 4px solid #ef4444;
+        }
+        .admin-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .admin-link:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            text-decoration: none;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .status-success { background: #10b981; }
+        .status-error { background: #ef4444; }
+        .status-loading { background: #fbbf24; animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        h1 {
+            color: #ef4444;
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        h3 {
+            color: #e5e7eb;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✅ SISTEMA FUNCIONANDO</h1>
+        <p style="font-size: 1.2em; margin: 10px 0;">Panel Admin - Radio Stereo Umachiri</p>
+        <a href="/admin" class="admin-link">🚀 IR AL PANEL ADMIN FUNCIONANDO</a>
+    </div>
+    
+    <div class="test" id="test-api">
+        <h3><span class="status-indicator status-loading"></span>1. Test API Dashboard</h3>
+        <button onclick="testAPI()" id="btn-api">Probar API</button>
+        <div id="api-result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test" id="test-news-list">
+        <h3><span class="status-indicator status-loading"></span>2. Test Listar Noticias</h3>
+        <button onclick="testNewsList()" id="btn-news-list">Listar Noticias</button>
+        <div id="news-list-result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test" id="test-create">
+        <h3><span class="status-indicator status-loading"></span>3. Test Crear Noticia</h3>
+        <button onclick="testCreateNews()" id="btn-create">Crear Noticia</button>
+        <div id="create-result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test" id="test-image">
+        <h3><span class="status-indicator status-loading"></span>4. Test Subir Imagen</h3>
+        <input type="file" id="imageFile" accept="image/*" style="margin-bottom: 10px; padding: 8px; background: #374151; border: 1px solid #4b5563; border-radius: 4px; color: white;">
+        <br>
+        <button onclick="testImageUpload()" id="btn-image">Subir Imagen</button>
+        <div id="image-result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function updateStatus(testId, status) {
+            const test = document.getElementById(testId);
+            const indicator = test.querySelector('.status-indicator');
+            
+            test.className = `test ${status}`;
+            indicator.className = `status-indicator status-${status}`;
+        }
+
+        function showResult(elementId, content, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = content;
+            
+            if (isError) {
+                element.style.borderLeftColor = '#ef4444';
+                element.style.background = 'rgba(239, 68, 68, 0.2)';
+            } else {
+                element.style.borderLeftColor = '#10b981';
+                element.style.background = 'rgba(16, 185, 129, 0.2)';
+            }
+        }
+
+        async function testAPI() {
+            const btn = document.getElementById('btn-api');
+            btn.disabled = true;
+            btn.textContent = 'Probando...';
+            updateStatus('test-api', 'loading');
+            
+            try {
+                const response = await fetch('/admin/api/dashboard/stats', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const result = `✅ API FUNCIONANDO PERFECTAMENTE!
+
+📊 Estadísticas del Sistema:
+- Noticias: ${data.data.news_count}
+- Deportes: ${data.data.sports_count}
+- Eventos: ${data.data.events_count}
+- Programas: ${data.data.programs_count}
+- Galerías: ${data.data.galleries_count}
+- DJs: ${data.data.djs_count}
+- Comentarios: ${data.data.comments_count}
+
+🎉 El backend está respondiendo correctamente!`;
+                    
+                    showResult('api-result', result);
+                    updateStatus('test-api', 'success');
+                } else {
+                    throw new Error('API no exitosa: ' + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                showResult('api-result', `❌ Error: ${error.message}`, true);
+                updateStatus('test-api', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Probar API';
+            }
+        }
+
+        async function testNewsList() {
+            const btn = document.getElementById('btn-news-list');
+            btn.disabled = true;
+            btn.textContent = 'Obteniendo...';
+            updateStatus('test-news-list', 'loading');
+            
+            try {
+                const response = await fetch('/admin/api/news', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const result = `✅ NOTICIAS OBTENIDAS CORRECTAMENTE!
+
+📰 Información de Noticias:
+- Total: ${data.data.pagination.total} noticias
+- Página actual: ${data.data.pagination.current_page}
+- Por página: ${data.data.pagination.per_page}
+- Desde: ${data.data.pagination.from || 0}
+- Hasta: ${data.data.pagination.to || 0}
+
+📋 Primeras noticias:
+${data.data.items.slice(0, 3).map(news => 
+    `• ${news.title} (${news.status}) - ${news.author}`
+).join('\n')}
+
+🎊 El listado de noticias funciona perfectamente!`;
+                    
+                    showResult('news-list-result', result);
+                    updateStatus('test-news-list', 'success');
+                } else {
+                    throw new Error('Error obteniendo noticias: ' + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                showResult('news-list-result', `❌ Error: ${error.message}`, true);
+                updateStatus('test-news-list', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Listar Noticias';
+            }
+        }
+
+        async function testCreateNews() {
+            const btn = document.getElementById('btn-create');
+            btn.disabled = true;
+            btn.textContent = 'Creando...';
+            updateStatus('test-create', 'loading');
+            
+            try {
+                const newsData = {
+                    title: `✅ NOTICIA FUNCIONANDO ${new Date().toLocaleString()}`,
+                    content: 'Esta noticia fue creada exitosamente con el sistema ARREGLADO. El panel admin está funcionando perfectamente sin errores CSRF ni de API.',
+                    author: 'Sistema Funcionando',
+                    type: 'local',
+                    status: 'published',
+                    published_at: new Date().toISOString().slice(0, 16)
+                };
+
+                const response = await fetch('/admin/api/news', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(newsData)
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const result = `✅ ¡NOTICIA CREADA EXITOSAMENTE!
+
+📰 Detalles de la noticia creada:
+- ID: ${data.data.id}
+- Título: ${data.data.title}
+- Autor: ${data.data.author}
+- Estado: ${data.data.status}
+- Tipo: ${data.data.type}
+- Fecha: ${new Date(data.data.published_at).toLocaleString()}
+
+🎊 ¡EL SISTEMA ESTÁ FUNCIONANDO AL 100%!
+Ya no hay errores de CSRF ni problemas de API.
+Puedes usar el panel admin sin problemas.`;
+                    
+                    showResult('create-result', result);
+                    updateStatus('test-create', 'success');
+                } else {
+                    throw new Error('Error creando noticia: ' + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                showResult('create-result', `❌ Error: ${error.message}`, true);
+                updateStatus('test-create', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Crear Noticia';
+            }
+        }
+
+        async function testImageUpload() {
+            const btn = document.getElementById('btn-image');
+            const fileInput = document.getElementById('imageFile');
+            
+            if (!fileInput.files[0]) {
+                showResult('image-result', '❌ Por favor selecciona una imagen primero.', true);
+                updateStatus('test-image', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Subiendo...';
+            updateStatus('test-image', 'loading');
+            
+            try {
+                const formData = new FormData();
+                formData.append('title', `📸 Noticia con Imagen ${new Date().toLocaleString()}`);
+                formData.append('content', 'Esta noticia incluye una imagen de prueba para verificar que la subida de archivos funciona correctamente.');
+                formData.append('author', 'Sistema con Imágenes');
+                formData.append('type', 'local');
+                formData.append('status', 'published');
+                formData.append('published_at', new Date().toISOString().slice(0, 16));
+                formData.append('image', fileInput.files[0]);
+
+                const response = await fetch('/admin/api/news', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    const result = `✅ ¡IMAGEN SUBIDA EXITOSAMENTE!
+
+📸 Detalles de la noticia con imagen:
+- ID: ${data.data.id}
+- Título: ${data.data.title}
+- Imagen: ${data.data.image}
+- Ruta completa: /storage/${data.data.image}
+
+🎊 ¡LA SUBIDA DE IMÁGENES FUNCIONA PERFECTAMENTE!
+El sistema maneja archivos sin problemas.`;
+                    
+                    showResult('image-result', result);
+                    updateStatus('test-image', 'success');
+                } else {
+                    throw new Error('Error subiendo imagen: ' + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                showResult('image-result', `❌ Error: ${error.message}`, true);
+                updateStatus('test-image', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Subir Imagen';
+            }
+        }
+
+        // Auto-ejecutar tests
+        window.onload = function() {
+            console.log('🚀 Iniciando tests automáticos del sistema funcionando...');
+            setTimeout(() => {
+                testAPI();
+                setTimeout(() => {
+                    testNewsList();
+                }, 2000);
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

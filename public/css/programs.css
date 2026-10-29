@@ -1,0 +1,240 @@
+/* Variables globales definidas en global.css */
+
+/* Estructura principal */
+.schedule-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+}
+
+/* Hero Section */
+.schedule-hero {
+    padding: 4rem 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 3rem;
+}
+
+/* Filtros por día */
+.day-filters .btn-group {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.day-filters .btn {
+    border-radius: 50px !important;
+    min-width: 60px;
+}
+
+/* Programación por días */
+.day-header {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.day-title {
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+.programs-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.program-card {
+    display: flex;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.program-image {
+    flex: 0 0 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.program-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.program-card:hover .program-image img {
+    transform: scale(1.05);
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+.program-details {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+.program-time {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.time-separator {
+    margin: 0 0.3rem;
+}
+
+.program-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--secondary-color);
+}
+
+.program-host {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    margin-bottom: 0.8rem;
+}
+
+.program-description {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.program-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.empty-day {
+    background-color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Programas destacados */
+.featured-programs {
+    border-radius: 20px 20px 0 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.section-title {
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+
+.featured-program-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.featured-program-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.featured-program-image {
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-program-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.featured-program-card:hover .featured-program-image img {
+    transform: scale(1.05);
+}
+
+.featured-program-body {
+    padding: 1.5rem;
+}
+
+.featured-program-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.featured-program-schedule {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .program-image {
+        flex: 0 0 120px;
+    }
+    
+    .program-details {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .schedule-hero {
+        padding: 2rem 0;
+    }
+    
+    .program-card {
+        flex-direction: column;
+    }
+    
+    .program-image {
+        flex: 0 0 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .program-actions {
+        flex-direction: column;
+    }
+    
+    .program-actions .btn {
+        width: 100%;
+    }
+}

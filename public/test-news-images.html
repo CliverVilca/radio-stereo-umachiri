@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Imágenes de Noticias - Radio Stereo Umachiri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .test-section { 
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+        .test-section h2 { margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+        .form-input, .form-textarea, .form-select { 
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 2px solid rgba(255,255,255,0.3); 
+            border-radius: 8px; 
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.7); }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .file-input { 
+            background: rgba(255,255,255,0.2); 
+            border: 2px dashed rgba(255,255,255,0.5); 
+            border-radius: 8px; 
+            padding: 2rem; 
+            text-align: center; 
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-input:hover { background: rgba(255,255,255,0.3); }
+        .btn { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white; 
+            padding: 1rem 2rem; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .result { 
+            background: rgba(0,0,0,0.3); 
+            padding: 1rem; 
+            border-radius: 8px; 
+            margin-top: 1rem; 
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .image-preview { 
+            max-width: 200px; 
+            max-height: 150px; 
+            border-radius: 8px; 
+            margin: 1rem 0;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .news-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .news-card { 
+            background: rgba(255,255,255,0.1); 
+            padding: 1rem; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .news-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 6px; margin-bottom: 0.5rem; }
+        .news-card h3 { margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .news-card p { font-size: 0.9rem; opacity: 0.8; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 Test de Imágenes en Noticias</h1>
+            <p>Prueba completa del sistema de imágenes para noticias</p>
+        </div>
+
+        <!-- Crear Noticia con Imagen -->
+        <div class="test-section">
+            <h2>➕ Crear Noticia con Imagen</h2>
+            <form id="createNewsForm">
+                <div class="form-group">
+                    <label class="form-label">Título *</label>
+                    <input type="text" class="form-input" name="title" placeholder="Título de la noticia" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contenido *</label>
+                    <textarea class="form-textarea" name="content" placeholder="Contenido de la noticia" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Autor *</label>
+                    <input type="text" class="form-input" name="author" value="Sistema Test" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tipo *</label>
+                    <select class="form-select" name="type" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="local">Local</option>
+                        <option value="nacional">Nacional</option>
+                        <option value="internacional">Internacional</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Fecha de Publicación *</label>
+                    <input type="date" class="form-input" name="published_at" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Estado *</label>
+                    <select class="form-select" name="status" required>
+                        <option value="published">Publicado</option>
+                        <option value="draft">Borrador</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Imagen</label>
+                    <div class="file-input" onclick="document.getElementById('newsImage').click()">
+                        <input type="file" id="newsImage" name="image" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                        <p>📷 Haz clic para seleccionar una imagen</p>
+                        <div id="imagePreview"></div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">Crear Noticia</button>
+            </form>
+            <div id="createResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Listar Noticias Existentes -->
+        <div class="test-section">
+            <h2>📋 Noticias Existentes</h2>
+            <button class="btn" onclick="loadNews()">Cargar Noticias</button>
+            <div id="newsList" class="news-list"></div>
+        </div>
+
+        <!-- Editar Noticia -->
+        <div class="test-section">
+            <h2>✏️ Editar Noticia</h2>
+            <div class="form-group">
+                <label class="form-label">ID de la Noticia a Editar</label>
+                <input type="number" class="form-input" id="editNewsId" placeholder="Ingresa el ID de la noticia">
+                <button class="btn" onclick="loadNewsForEdit()" style="margin-top: 0.5rem;">Cargar para Editar</button>
+            </div>
+            <div id="editForm" style="display: none;">
+                <form id="updateNewsForm">
+                    <div class="form-group">
+                        <label class="form-label">Título *</label>
+                        <input type="text" class="form-input" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Contenido *</label>
+                        <textarea class="form-textarea" name="content" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Imagen Actual</label>
+                        <div id="currentImage"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nueva Imagen (opcional)</label>
+                        <div class="file-input" onclick="document.getElementById('editNewsImage').click()">
+                            <input type="file" id="editNewsImage" name="image" accept="image/*" style="display: none;" onchange="previewEditImage(this)">
+                            <p>📷 Haz clic para cambiar imagen</p>
+                            <div id="editImagePreview"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn">Actualizar Noticia</button>
+                </form>
+            </div>
+            <div id="editResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Enlaces Útiles -->
+        <div class="test-section">
+            <h2>🔗 Enlaces Útiles</h2>
+            <a href="/admin-functional-test" class="btn" target="_blank">Panel Admin Completo</a>
+            <a href="/noticias" class="btn" target="_blank">Ver Noticias Públicas</a>
+            <a href="/sistema-completo" class="btn" target="_blank">Verificación Completa</a>
+        </div>
+    </div>
+
+    <script>
+        let currentEditId = null;
+
+        // Set default date
+        document.querySelector('input[name="published_at"]').value = new Date().toISOString().split('T')[0];
+
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="image-preview" alt="Vista previa">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewEditImage(input) {
+            const preview = document.getElementById('editImagePreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="image-preview" alt="Vista previa">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Create news
+        document.getElementById('createNewsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const resultDiv = document.getElementById('createResult');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creando...';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '🔄 Creando noticia...';
+            
+            try {
+                const formData = new FormData(this);
+                
+                const response = await fetch('/test-admin-api/news', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `<div class="success">✅ ${result.message}</div><pre>${JSON.stringify(result.data, null, 2)}</pre>`;
+                    this.reset();
+                    document.getElementById('imagePreview').innerHTML = '';
+                    document.querySelector('input[name="published_at"]').value = new Date().toISOString().split('T')[0];
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${result.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Crear Noticia';
+        });
+
+        // Load news
+        async function loadNews() {
+            const listDiv = document.getElementById('newsList');
+            listDiv.innerHTML = '🔄 Cargando noticias...';
+            
+            try {
+                const response = await fetch('/test-admin-api/news');
+                const result = await response.json();
+                
+                if (result.success && result.data.items.length > 0) {
+                    listDiv.innerHTML = result.data.items.map(news => `
+                        <div class="news-card">
+                            ${news.image ? `<img src="/storage/${news.image}" alt="${news.title}" onerror="this.style.display='none'">` : ''}
+                            <h3>${news.title}</h3>
+                            <p><strong>ID:</strong> ${news.id} | <strong>Autor:</strong> ${news.author}</p>
+                            <p><strong>Tipo:</strong> ${news.type} | <strong>Estado:</strong> ${news.status}</p>
+                            <p><strong>Imagen:</strong> ${news.image || 'Sin imagen'}</p>
+                        </div>
+                    `).join('');
+                } else {
+                    listDiv.innerHTML = '<p>No hay noticias disponibles</p>';
+                }
+            } catch (error) {
+                listDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Load news for edit
+        async function loadNewsForEdit() {
+            const id = document.getElementById('editNewsId').value;
+            if (!id) {
+                alert('Por favor ingresa un ID válido');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/test-admin-api/news/${id}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const news = result.data;
+                    currentEditId = id;
+                    
+                    // Fill form
+                    const form = document.getElementById('updateNewsForm');
+                    form.querySelector('input[name="title"]').value = news.title;
+                    form.querySelector('textarea[name="content"]').value = news.content;
+                    
+                    // Show current image
+                    const currentImageDiv = document.getElementById('currentImage');
+                    if (news.image) {
+                        currentImageDiv.innerHTML = `
+                            <img src="/storage/${news.image}" class="image-preview" alt="Imagen actual">
+                            <p>Imagen actual: ${news.image}</p>
+                        `;
+                    } else {
+                        currentImageDiv.innerHTML = '<p>Sin imagen actual</p>';
+                    }
+                    
+                    document.getElementById('editForm').style.display = 'block';
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Update news
+        document.getElementById('updateNewsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!currentEditId) return;
+            
+            const resultDiv = document.getElementById('editResult');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Actualizando...';
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '🔄 Actualizando noticia...';
+            
+            try {
+                const formData = new FormData(this);
+                
+                const response = await fetch(`/test-admin-api/news/${currentEditId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    resultDiv.innerHTML = `<div class="success">✅ ${result.message}</div><pre>${JSON.stringify(result.data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${result.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Actualizar Noticia';
+        });
+
+        // Load news on page load
+        window.addEventListener('load', loadNews);
+    </script>
+</body>
+</html>

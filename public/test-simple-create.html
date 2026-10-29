@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✅ Test Simple - Crear Noticia</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background: #f0f8ff; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2563eb; text-align: center; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #374151; }
+        input, textarea, select { width: 100%; padding: 0.75rem; border: 2px solid #d1d5db; border-radius: 6px; font-size: 1rem; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #2563eb; }
+        textarea { height: 100px; resize: vertical; }
+        button { background: #2563eb; color: white; padding: 1rem 2rem; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 600; }
+        button:hover { background: #1d4ed8; }
+        button:disabled { background: #9ca3af; cursor: not-allowed; }
+        .result { margin-top: 1rem; padding: 1rem; border-radius: 6px; }
+        .success { background: #dcfce7; color: #166534; border: 2px solid #22c55e; }
+        .error { background: #fef2f2; color: #dc2626; border: 2px solid #ef4444; }
+        .info { background: #eff6ff; color: #1d4ed8; border: 2px solid #3b82f6; }
+        .status { text-align: center; margin: 1rem 0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Test Simple - Crear Noticia</h1>
+        <p style="text-align: center; color: #6b7280;">Prueba básica para verificar que la creación de noticias funciona</p>
+        
+        <div class="status" id="status">🔄 Listo para probar</div>
+        
+        <form id="simpleForm">
+            <div class="form-group">
+                <label>Título *</label>
+                <input type="text" name="title" value="Noticia de Prueba Simple" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Contenido *</label>
+                <textarea name="content" required>Este es el contenido de una noticia de prueba para verificar que el sistema funciona correctamente.</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Autor *</label>
+                <input type="text" name="author" value="Test Simple" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Tipo *</label>
+                <select name="type" required>
+                    <option value="local">Local</option>
+                    <option value="nacional">Nacional</option>
+                    <option value="internacional">Internacional</option>
+                    <option value="general">General</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Fecha de Publicación *</label>
+                <input type="date" name="published_at" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Estado *</label>
+                <select name="status" required>
+                    <option value="published">Publicado</option>
+                    <option value="draft">Borrador</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="is_featured" style="width: auto; margin-right: 0.5rem;"> Noticia destacada
+                </label>
+            </div>
+            
+            <button type="submit">✅ Crear Noticia</button>
+        </form>
+        
+        <div id="result" style="display: none;"></div>
+        
+        <hr style="margin: 2rem 0;">
+        
+        <div style="text-align: center;">
+            <button onclick="testConnection()" style="background: #059669; margin: 0.5rem;">🔗 Test Conexión</button>
+            <button onclick="listNews()" style="background: #7c3aed; margin: 0.5rem;">📋 Listar Noticias</button>
+        </div>
+        
+        <div id="testResult" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Set default date
+        document.querySelector('input[name="published_at"]').value = new Date().toISOString().split('T')[0];
+
+        document.getElementById('simpleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const statusDiv = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔄 Creando...';
+            statusDiv.textContent = '📤 Enviando datos...';
+            statusDiv.style.color = '#2563eb';
+            
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '🔄 Procesando solicitud...';
+            
+            try {
+                const formData = new FormData(this);
+                
+                console.log('=== Datos a enviar ===');
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
+                }
+                
+                const response = await fetch('/create-news-direct', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const result = await response.json();
+                console.log('Response data:', result);
+                
+                if (result.success) {
+                    statusDiv.textContent = '✅ ¡Noticia creada exitosamente!';
+                    statusDiv.style.color = '#059669';
+                    
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ ¡ÉXITO!</h3>
+                        <p><strong>Mensaje:</strong> ${result.message}</p>
+                        <p><strong>ID:</strong> ${result.data.id}</p>
+                        <p><strong>Título:</strong> ${result.data.title}</p>
+                        <p><strong>Imagen:</strong> ${result.data.image || 'Sin imagen'}</p>
+                        <p><strong>Destacada:</strong> ${result.data.is_featured ? 'Sí' : 'No'}</p>
+                    `;
+                    
+                    // Reset form
+                    this.reset();
+                    document.querySelector('input[name="published_at"]').value = new Date().toISOString().split('T')[0];
+                } else {
+                    statusDiv.textContent = '❌ Error al crear noticia';
+                    statusDiv.style.color = '#dc2626';
+                    
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h3>❌ Error</h3>
+                        <p><strong>Mensaje:</strong> ${result.message}</p>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.textContent = '❌ Error de conexión';
+                statusDiv.style.color = '#dc2626';
+                
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h3>❌ Error de Conexión</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>Verifica que el servidor esté funcionando y las rutas estén configuradas correctamente.</p>
+                `;
+                
+                console.error('Error:', error);
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = '✅ Crear Noticia';
+        });
+
+        async function testConnection() {
+            const resultDiv = document.getElementById('testResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '🔗 Probando conexión...';
+            
+            try {
+                const response = await fetch('/test-admin-api/news');
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ Conexión OK</h3>
+                        <p>API funcionando correctamente</p>
+                        <p>Noticias encontradas: ${data.data.items.length}</p>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<h3>❌ Error en API</h3><p>${data.message}</p>`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>❌ Error de Conexión</h3><p>${error.message}</p>`;
+            }
+        }
+
+        async function listNews() {
+            const resultDiv = document.getElementById('testResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '📋 Cargando noticias...';
+            
+            try {
+                const response = await fetch('/test-admin-api/news');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const newsList = data.data.items.map(news => `
+                        <div style="border: 1px solid #d1d5db; padding: 0.5rem; margin: 0.5rem 0; border-radius: 4px;">
+                            <strong>ID ${news.id}:</strong> ${news.title}<br>
+                            <small>Autor: ${news.author} | Tipo: ${news.type} | Imagen: ${news.image || 'Sin imagen'}</small>
+                        </div>
+                    `).join('');
+                    
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h3>📋 Noticias (${data.data.items.length})</h3>
+                        ${newsList}
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<h3>❌ Error</h3><p>${data.message}</p>`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<h3>❌ Error</h3><p>${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

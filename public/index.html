@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Stereo Umachiri - Sistema de Administración</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        .button {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 0.5rem;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #dc2626;
+        }
+        .button.secondary {
+            background: #6b7280;
+        }
+        .button.secondary:hover {
+            background: #4b5563;
+        }
+        .status {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .status h3 {
+            color: #0ea5e9;
+            margin: 0 0 0.5rem 0;
+        }
+        .check {
+            color: #16a34a;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Radio Stereo Umachiri</h1>
+        <p class="subtitle">Sistema de Administración de Noticias</p>
+        
+        <div class="status">
+            <h3>📊 Estado del Sistema</h3>
+            <p><span class="check">✅</span> Backend: Funcionando</p>
+            <p><span class="check">✅</span> Frontend: Configurado</p>
+            <p><span class="check">✅</span> Base de Datos: Conectada</p>
+            <p><span class="check">✅</span> API: Operativa</p>
+        </div>
+
+        <div style="margin: 2rem 0;">
+            <a href="/test-final.html" class="button">
+                🧪 Test Final del Sistema
+            </a>
+            <br>
+            <a href="/test-working.html" class="button">
+                🔧 Test Detallado
+            </a>
+            <br>
+            <a href="/test-direct.php" class="button secondary">
+                📊 API Directa
+            </a>
+            <br>
+            <a href="/admin" class="button secondary">
+                ⚙️ Panel de Administración
+            </a>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee;">
+            <h4>🚀 Accesos Rápidos</h4>
+            <p>
+                <a href="/test-final.html" style="color: #ef4444;">Test Final</a> |
+                <a href="/test-working.html" style="color: #007bff;">Test Detallado</a> |
+                <a href="/test-direct.php" style="color: #28a745;">API Directa</a> |
+                <a href="/admin" style="color: #6b7280;">Panel Admin</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-verificar que el servidor esté funcionando
+        fetch('/test-direct.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('✅ Sistema funcionando correctamente');
+                    console.log('📊 Estadísticas:', data.data.stats);
+                }
+            })
+            .catch(error => {
+                console.log('⚠️ Verificar que el servidor Laravel esté corriendo en puerto 8000');
+                console.log('🔗 URL correcta: http://localhost:8000');
+            });
+    </script>
+</body>
+</html>

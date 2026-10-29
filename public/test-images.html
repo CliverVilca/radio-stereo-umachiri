@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Imágenes</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .image-test { 
+            background: white; 
+            padding: 1rem; 
+            margin: 1rem 0; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .image-test img { 
+            max-width: 200px; 
+            max-height: 150px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            margin: 0.5rem;
+        }
+        .status { padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Test de Imágenes - Radio Stereo Umachiri</h1>
+        
+        <div class="image-test">
+            <h3>Test 1: Imagen Existente (Deportes)</h3>
+            <p>Ruta: /storage/sports/MA7COuafYz0yi0ENfEvAjj9u9L8sxxzPzOAoSh27.jpg</p>
+            <img src="/storage/sports/MA7COuafYz0yi0ENfEvAjj9u9L8sxxzPzOAoSh27.jpg" 
+                 alt="Test Image 1" 
+                 onload="showStatus('status1', 'success', 'Imagen cargada correctamente')"
+                 onerror="showStatus('status1', 'error', 'Error al cargar la imagen')">
+            <div id="status1" class="status info">Cargando...</div>
+        </div>
+        
+        <div class="image-test">
+            <h3>Test 2: Segunda Imagen Existente</h3>
+            <p>Ruta: /storage/sports/yo7gVzWn0ZXu6Wf3BrGSei8JC0QgfXlKNH1xS43Z.jpg</p>
+            <img src="/storage/sports/yo7gVzWn0ZXu6Wf3BrGSei8JC0QgfXlKNH1xS43Z.jpg" 
+                 alt="Test Image 2" 
+                 onload="showStatus('status2', 'success', 'Imagen cargada correctamente')"
+                 onerror="showStatus('status2', 'error', 'Error al cargar la imagen')">
+            <div id="status2" class="status info">Cargando...</div>
+        </div>
+        
+        <div class="image-test">
+            <h3>Test 3: Imagen Inexistente</h3>
+            <p>Ruta: /storage/sports/imagen-que-no-existe.jpg</p>
+            <img src="/storage/sports/imagen-que-no-existe.jpg" 
+                 alt="Test Image 3" 
+                 onload="showStatus('status3', 'success', 'Imagen cargada correctamente')"
+                 onerror="showStatus('status3', 'error', 'Error al cargar la imagen (esperado)')">
+            <div id="status3" class="status info">Cargando...</div>
+        </div>
+        
+        <div class="image-test">
+            <h3>Test 4: Datos de la API</h3>
+            <button onclick="loadSportsData()" style="padding: 0.5rem 1rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Cargar Datos de Deportes
+            </button>
+            <div id="apiData" class="status info">Haz clic para cargar datos...</div>
+        </div>
+        
+        <div class="image-test">
+            <h3>Test 5: Información del Sistema</h3>
+            <div id="systemInfo" class="status info">
+                <strong>URL Base:</strong> <span id="baseUrl"></span><br>
+                <strong>Storage URL:</strong> <span id="storageUrl"></span><br>
+                <strong>Timestamp:</strong> <span id="timestamp"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showStatus(elementId, type, message) {
+            const element = document.getElementById(elementId);
+            element.className = `status ${type}`;
+            element.textContent = message;
+        }
+        
+        async function loadSportsData() {
+            const statusDiv = document.getElementById('apiData');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Cargando datos...';
+            
+            try {
+                const response = await fetch('/test-admin-api/sports');
+                const data = await response.json();
+                
+                if (data.success && data.data.items.length > 0) {
+                    const sport = data.data.items[0];
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `
+                        <strong>Primer deporte:</strong><br>
+                        ID: ${sport.id}<br>
+                        Título: ${sport.title}<br>
+                        Imagen: ${sport.image || 'Sin imagen'}<br>
+                        ${sport.image ? `<img src="/storage/${sport.image}" style="max-width: 100px; margin-top: 0.5rem;">` : ''}
+                    `;
+                } else {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = 'No se encontraron datos';
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Error al cargar datos: ' + error.message;
+            }
+        }
+        
+        // Initialize system info
+        document.getElementById('baseUrl').textContent = window.location.origin;
+        document.getElementById('storageUrl').textContent = window.location.origin + '/storage/';
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        
+        console.log('🖼️ Test de imágenes iniciado');
+        console.log('Base URL:', window.location.origin);
+        console.log('Storage URL:', window.location.origin + '/storage/');
+    </script>
+</body>
+</html>

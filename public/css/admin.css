@@ -1,0 +1,198 @@
+/* Variables globales definidas en global.css */
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--bg-light);
+}
+
+.admin-sidebar {
+    background: var(--secondary-color);
+    min-height: 100vh;
+    width: 250px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.admin-sidebar .sidebar-header {
+    padding: 20px;
+    text-align: center;
+    background: rgba(0,0,0,0.2);
+}
+
+.admin-sidebar .sidebar-header h3 {
+    color: white;
+    margin: 0;
+    font-weight: 700;
+}
+
+.admin-sidebar .sidebar-header p {
+    color: rgba(255,255,255,0.8);
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+}
+
+.admin-nav {
+    margin-top: 30px;
+}
+
+.admin-nav-item {
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.admin-nav-item i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+}
+
+.admin-nav-item:hover,
+.admin-nav-item.active {
+    background: var(--primary-color);
+    border-left-color: var(--accent-color);
+}
+
+.admin-content {
+    margin-left: 250px;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+.admin-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.stat-card .icon {
+    font-size: 2.5rem;
+    margin-right: 20px;
+    color: var(--primary-color);
+}
+
+.stat-card .info .stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.stat-card .info .stat-label {
+    color: var(--text-light);
+    margin-top: 0;
+}
+
+/* Dashboard Specific Styles */
+.dashboard-header {
+    margin: 0 0 20px 0;
+    color: var(--primary-color);
+}
+
+.dashboard-subheader {
+    color: var(--text-light);
+    margin-bottom: 30px;
+}
+
+.current-program-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.current-program-card h4 {
+    margin: 0 0 10px 0;
+}
+
+.current-program-card p {
+    margin: 0 0 5px 0;
+}
+
+.current-program-card .live-badge {
+    background: var(--accent-color);
+    padding: 2px 8px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.quick-action-btn {
+    color: white;
+    padding: 15px;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.btn-programs { background-color: var(--primary-color); }
+.btn-news { background-color: var(--accent-color); }
+.btn-comments { background-color: #28a745; } /* Success Green */
+.btn-messages { background-color: #ffc107; } /* Warning Yellow */
+.btn-analytics { background-color: #6c757d; } /* Secondary Gray */
+.btn-website { background-color: var(--primary-color); }
+
+.latest-activities {
+    background: var(--bg-light);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.activity-item-icon {
+    color: white;
+    padding: 2px 8px;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    margin-right: 10px;
+}
+
+.activity-item-text {
+    flex-grow: 1;
+}
+
+.activity-item-time {
+    margin-left: auto;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}

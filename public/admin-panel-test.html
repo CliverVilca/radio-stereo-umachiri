@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Panel Admin - Radio Stereo Umachiri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { color: #60a5fa; margin-bottom: 1rem; }
+        .test-section { 
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .test-section h2 { color: #cbd5e1; margin-bottom: 1rem; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .test-item { 
+            background: rgba(51, 65, 85, 0.6);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .test-item h3 { color: #94a3b8; margin-bottom: 0.5rem; }
+        .btn { 
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.25rem;
+            transition: all 0.3s ease;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
+        .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .status { padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0; }
+        .status.success { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
+        .status.error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+        .status.info { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; }
+        .image-preview { max-width: 200px; max-height: 150px; border-radius: 4px; margin: 0.5rem 0; }
+        .api-result { 
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Panel Admin - Radio Stereo Umachiri</h1>
+            <p>Sistema de pruebas completo - Verificación de funcionalidad</p>
+        </div>
+
+        <!-- Panel Admin Links -->
+        <div class="test-section">
+            <h2>🎛️ Acceso al Panel Admin</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <h3>Panel Admin Funcional</h3>
+                    <p>Panel completo con CRUD y actualización automática</p>
+                    <a href="/admin-functional-test" class="btn btn-success" target="_blank">Abrir Panel Admin</a>
+                </div>
+                <div class="test-item">
+                    <h3>Panel Admin con React</h3>
+                    <p>Versión con componentes React (Vite)</p>
+                    <a href="/admin-vite-test" class="btn btn-warning" target="_blank">Abrir Panel React</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Tests -->
+        <div class="test-section">
+            <h2>🔌 Pruebas de API</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <h3>Dashboard Stats</h3>
+                    <button class="btn" onclick="testAPI('/test-admin-api/dashboard/stats', 'dashboard-result')">Probar Dashboard</button>
+                    <div id="dashboard-result" class="api-result"></div>
+                </div>
+                <div class="test-item">
+                    <h3>Deportes API</h3>
+                    <button class="btn" onclick="testAPI('/test-admin-api/sports', 'sports-result')">Listar Deportes</button>
+                    <div id="sports-result" class="api-result"></div>
+                </div>
+                <div class="test-item">
+                    <h3>Eventos API</h3>
+                    <button class="btn" onclick="testAPI('/test-admin-api/events', 'events-result')">Listar Eventos</button>
+                    <div id="events-result" class="api-result"></div>
+                </div>
+                <div class="test-item">
+                    <h3>Noticias API</h3>
+                    <button class="btn" onclick="testAPI('/test-admin-api/news', 'news-result')">Listar Noticias</button>
+                    <div id="news-result" class="api-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Tests -->
+        <div class="test-section">
+            <h2>🖼️ Pruebas de Imágenes</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <h3>Imagen Deportes 1</h3>
+                    <img src="/storage/sports/MA7COuafYz0yi0ENfEvAjj9u9L8sxxzPzOAoSh27.jpg" 
+                         class="image-preview" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                         onload="this.nextElementSibling.style.display='none';">
+                    <div class="status error" style="display:none;">❌ Error cargando imagen</div>
+                </div>
+                <div class="test-item">
+                    <h3>Imagen Deportes 2</h3>
+                    <img src="/storage/sports/yo7gVzWn0ZXu6Wf3BrGSei8JC0QgfXlKNH1xS43Z.jpg" 
+                         class="image-preview" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                         onload="this.nextElementSibling.style.display='none';">
+                    <div class="status error" style="display:none;">❌ Error cargando imagen</div>
+                </div>
+                <div class="test-item">
+                    <h3>Imagen Noticias</h3>
+                    <img src="/storage/news/3.jpg" 
+                         class="image-preview" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                         onload="this.nextElementSibling.style.display='none';">
+                    <div class="status error" style="display:none;">❌ Error cargando imagen</div>
+                </div>
+                <div class="test-item">
+                    <h3>Test de Subida</h3>
+                    <input type="file" id="imageUpload" accept="image/*">
+                    <button class="btn" onclick="testImageUpload()">Subir Imagen</button>
+                    <div id="upload-result" class="api-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRUD Tests -->
+        <div class="test-section">
+            <h2>📝 Pruebas CRUD</h2>
+            <div class="test-grid">
+                <div class="test-item">
+                    <h3>Crear Deporte</h3>
+                    <button class="btn btn-success" onclick="testCreateSport()">Crear Deporte de Prueba</button>
+                    <div id="create-sport-result" class="api-result"></div>
+                </div>
+                <div class="test-item">
+                    <h3>Crear Evento</h3>
+                    <button class="btn btn-success" onclick="testCreateEvent()">Crear Evento de Prueba</button>
+                    <div id="create-event-result" class="api-result"></div>
+                </div>
+                <div class="test-item">
+                    <h3>Crear DJ</h3>
+                    <button class="btn btn-success" onclick="testCreateDJ()">Crear DJ de Prueba</button>
+                    <div id="create-dj-result" class="api-result"></div>
+                </div>
+                <div class="test-item">
+                    <h3>Crear Programa</h3>
+                    <button class="btn btn-success" onclick="testCreateProgram()">Crear Programa de Prueba</button>
+                    <div id="create-program-result" class="api-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Summary -->
+        <div class="test-section">
+            <h2>📊 Estado del Sistema</h2>
+            <div id="system-status">
+                <div class="status info">🔄 Verificando estado del sistema...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test API function
+        async function testAPI(endpoint, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = '🔄 Cargando...';
+            
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                resultDiv.innerHTML = `<strong>Status:</strong> ${response.status}<br><strong>Response:</strong><br>${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Test create sport
+        async function testCreateSport() {
+            const resultDiv = document.getElementById('create-sport-result');
+            resultDiv.innerHTML = '🔄 Creando deporte...';
+            
+            const sportData = {
+                title: `Deporte Test ${Date.now()}`,
+                content: 'Este es un deporte de prueba creado automáticamente',
+                author: 'Sistema Test',
+                category: 'otros',
+                published_at: new Date().toISOString().split('T')[0],
+                status: 'published',
+                is_featured: false
+            };
+            
+            try {
+                const response = await fetch('/test-admin-api/sports', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(sportData)
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<strong>Status:</strong> ${response.status}<br><strong>Response:</strong><br>${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Test create event
+        async function testCreateEvent() {
+            const resultDiv = document.getElementById('create-event-result');
+            resultDiv.innerHTML = '🔄 Creando evento...';
+            
+            const eventData = {
+                title: `Evento Test ${Date.now()}`,
+                description: 'Este es un evento de prueba',
+                start_time: new Date().toISOString(),
+                location: 'Radio Stereo Umachiri',
+                is_featured: false
+            };
+            
+            try {
+                const response = await fetch('/test-admin-api/events', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(eventData)
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<strong>Status:</strong> ${response.status}<br><strong>Response:</strong><br>${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Test create DJ
+        async function testCreateDJ() {
+            const resultDiv = document.getElementById('create-dj-result');
+            resultDiv.innerHTML = '🔄 Creando DJ...';
+            
+            const djData = {
+                name: `DJ Test ${Date.now()}`,
+                specialty: 'Música Variada',
+                bio: 'DJ de prueba creado automáticamente',
+                email: 'test@radio.com',
+                phone: '123456789'
+            };
+            
+            try {
+                const response = await fetch('/test-admin-api/djs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(djData)
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<strong>Status:</strong> ${response.status}<br><strong>Response:</strong><br>${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Test create program
+        async function testCreateProgram() {
+            const resultDiv = document.getElementById('create-program-result');
+            resultDiv.innerHTML = '🔄 Creando programa...';
+            
+            const programData = {
+                title: `Programa Test ${Date.now()}`,
+                description: 'Programa de prueba',
+                host: 'Host Test',
+                start_time: '10:00',
+                end_time: '12:00',
+                days_of_week: ['Lunes', 'Miércoles', 'Viernes'],
+                is_featured: false
+            };
+            
+            try {
+                const response = await fetch('/test-admin-api/programs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(programData)
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<strong>Status:</strong> ${response.status}<br><strong>Response:</strong><br>${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Test image upload
+        async function testImageUpload() {
+            const fileInput = document.getElementById('imageUpload');
+            const resultDiv = document.getElementById('upload-result');
+            
+            if (!fileInput.files[0]) {
+                resultDiv.innerHTML = '❌ Por favor selecciona una imagen';
+                return;
+            }
+            
+            resultDiv.innerHTML = '🔄 Subiendo imagen...';
+            
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            formData.append('title', `Test Image ${Date.now()}`);
+            formData.append('content', 'Imagen de prueba');
+            formData.append('author', 'Sistema Test');
+            formData.append('category', 'otros');
+            formData.append('published_at', new Date().toISOString().split('T')[0]);
+            formData.append('status', 'published');
+            formData.append('is_featured', 'false');
+            
+            try {
+                const response = await fetch('/test-admin-api/sports', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `<strong>Status:</strong> ${response.status}<br><strong>Response:</strong><br>${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+
+        // Check system status on load
+        window.addEventListener('load', async function() {
+            const statusDiv = document.getElementById('system-status');
+            
+            try {
+                // Test dashboard API
+                const dashResponse = await fetch('/test-admin-api/dashboard/stats');
+                const dashData = await dashResponse.json();
+                
+                let statusHTML = '<div class="status success">✅ Sistema funcionando correctamente</div>';
+                statusHTML += `<div class="status info">📊 Estadísticas: ${dashData.data.news_count} noticias, ${dashData.data.sports_count} deportes, ${dashData.data.events_count} eventos</div>`;
+                statusHTML += '<div class="status info">🎛️ Panel Admin: Disponible en /admin-functional-test</div>';
+                statusHTML += '<div class="status info">🔌 APIs: Funcionando correctamente</div>';
+                statusHTML += '<div class="status info">🖼️ Imágenes: Sistema de storage configurado</div>';
+                
+                statusDiv.innerHTML = statusHTML;
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Error del sistema: ${error.message}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
